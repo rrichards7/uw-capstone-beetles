@@ -21,7 +21,7 @@ We will be using The Database of European Forest Insect and Disease Disturbances
 
 Download here: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/FOREST/DISTURBANCES/DEFID2/
 
-Then navigate to ____ notebook to process the raw records into a geopandas dataframe.
+Then navigate to [proc_defid2.ipynb](data_proc/proc_defid2.ipynb) notebook to process the raw records into a geopandas dataframe.
 
 ### Section 2.2: USFS 2023
 
