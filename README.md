@@ -133,6 +133,19 @@ ps2_sd:
   required: true
 ```
 
+#### Section 3.1.3 Env Variables
+
+I would suggest setting these to facilitate cmds and API calls
+```bash
+export CUDA_VISIBLE_DEVICES=<GPU ID>
+export WANDB_PROJECT="PROJECT-ID"
+export WANDB_ENTITY="ACCOUNT-NAME"
+export WANDB_NAME="RUN-NAME"
+export OER_DATASET_PATH=<OERUN-PATH>
+export PROJECT_PATH=<PROJECT-PATH>
+export PL_API_KEY=<API KEY>
+```
+
 ### Section 3.2: Building a Dataset
 
 Run the OER scrit to generate annotations json; assuming $RAW is the dir holding all raw geodataframes
