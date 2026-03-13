@@ -1,6 +1,12 @@
 # Detecting Bark Beetle Outbreaks through Geospatial Foundation Models
 University of Washington MSDS Capstone Project 2026
 
+## Environment and Repo Setup
+
+```bash
+conda
+```
+
 ## Data Processing
 We detail which datasets we use and how to correct process and format them for OlmoEarth ingest.
 
