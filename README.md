@@ -25,6 +25,37 @@ Then navigate to ____ notebook to process the raw records into a geopandas dataf
 
 #### Section 3.1.1: Dataset Config
 
+Example SuperDove configuration update:
+```json
+"superdove": {
+  "band_sets": [
+    {
+      "bands": ["b01", "b02", "b03", "b04","b05", "b06", "b07", "b08"],
+      "dtype": "uint16"
+    }
+  ],
+  "data_source": {
+    "time_offset": "120d",
+    "duration": "184d",
+    "cache_dir": "cache/superdove",
+    "item_type_id": "PSScene",
+    "asset_type_id": "ortho_analytic_8b_sr",
+    "ingest": true,
+    "name": "rslearn.data_sources.planet.Planet",
+    "bands":["b01", "b02", "b03", "b04","b05", "b06", "b07", "b08"],
+    "query_config": {
+      "time_mode": "WITHIN",
+      "max_matches": 1
+    },
+    "range_filters": {
+      "cloud_cover": {"lte": 1.0}
+    },
+    "sort_by": "cloud_cover"
+  },
+  "type": "raster"
+}
+```
+
 #### Section 3.1.2: Model Config
 
 ### Section 3.2: Building a Dataset
