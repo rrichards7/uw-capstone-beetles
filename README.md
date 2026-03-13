@@ -25,6 +25,8 @@ Then navigate to ____ notebook to process the raw records into a geopandas dataf
 
 ### Section 2.2: USFS 2023
 
+Please refer to the previous team for this dataset: https://github.com/DSHydro/Insect_Forest_Infestation
+
 ## Section 3: Model Training and Evaluation
 
 ### Section 3.1: Configuration
