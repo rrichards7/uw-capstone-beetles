@@ -137,18 +137,25 @@ ps2_sd:
 
 Run the OER scrit to generate annotations json; assuming $RAW is the dir holding all raw geodataframes
 ```bash
-python ./scripts/oer_annotation_creation.py $RAW/cluster_all.gdb --outdir $PROJECT_PATH --id-col cluster_id --taskgeom-col task_geom_buff --buffer 0 --label-cols label
+python ./scripts/oer_annotation_creation.py $RAW/cluster_all.gdb \
+            --outdir $PROJECT_PATH \
+            --id-col cluster_id \
+            --taskgeom-col task_geom_buff \
+            --buffer 0 \
+            --label-cols label
 ```
 
 Prepare the labeled windows from the 
 
 ```bash
-python -m olmoearth_projects.main olmoearth_run prepare_labeled_windows --project_path $PROJECT_PATH --scratch_path $OER_DATASET_PATH
+python -m olmoearth_projects.main olmoearth_run prepare_labeled_windows \
+        --project_path $PROJECT_PATH --scratch_path $OER_DATASET_PATH
 ```
 
 Build the windows - most time intensive!
 ```bash
-python -m olmoearth_projects.main olmoearth_run build_dataset_from_windows --project_path $PROJECT_PATH --scratch_path $OER_DATASET_PATH
+python -m olmoearth_projects.main olmoearth_run build_dataset_from_windows \
+        --project_path $PROJECT_PATH --scratch_path $OER_DATASET_PATH
 ```
 
 ### Section 3.3: Training OlmoEarth
@@ -156,7 +163,8 @@ python -m olmoearth_projects.main olmoearth_run build_dataset_from_windows --pro
 After setting up the model configuration file, fine-tune OlmoEarth on the processed windows:
 
 ```bash
-python -m olmoearth_projects.main olmoearth_run finetune --project_path $PROJECT_PATH --scratch_path $OER_DATASET_PATH
+python -m olmoearth_projects.main olmoearth_run finetune \
+        --project_path $PROJECT_PATH --scratch_path $OER_DATASET_PATH
 ```
 
 ### Section 3.4: Testing
