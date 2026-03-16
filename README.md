@@ -236,4 +236,23 @@ TBD
 
 ## Section 5: Embedding Analysis
 
-TBD
+This section utilizes the high-dimensional latent space of the fine-tuned OlmoEarth model to quantify forest degradation and validate model sensitivity to bark beetle disturbances. All notebooks used for analysis can be found in the embeddings_analysis folder.
+
+---
+
+### 5.1: Spatiotemporal Event Alignment
+We synchronize satellite imagery with ground-truth disturbance records to establish a "Healthy vs. Infested" benchmark. 
+* **Workflow:** Extracts WGS84 bounding boxes from target GeoTIFFs to query the `defid2.sqlite` database. Informs when observations were made and when to generate embeddings. 
+
+### 5.2: Latent Space Trajectories
+We analyze the "drift" in embeddings over multiple years to detect the spectral and structural shifts characteristic of beetle-driven canopy decline.
+* **Dimensionality Reduction:** Uses Global Average Pooling and PCA to project complex feature vectors into 2D trajectories, visualizing the transition of forest patches from healthy to infested states.
+* **Distance Metrics:** Employs Cosine Distance to quantify the magnitude of shift between years. An increasing distance between the 2019 (Healthy) and 2021 (Infested) embeddings serves as a quantitative proxy for infestation severity.
+
+### 5.3: Representation Quality & Interpretability
+To ensure the fine-tuned model captures biological signals rather than sensor artifacts, we apply several diagnostic metrics:
+* **SVD Energy Distribution:** Evaluates representation "organization" by measuring variance concentration in top singular values.
+* **Change Kurtosis:** Analyzes the "peakedness" of yearly differences. High kurtosis indicates the model has learned to focus on specific reactive spectral bands (discoloration) rather than global image noise.
+* **Model Divergence:** Measures the cosine distance between the Base OlmoEarth and Fine-Tuned representations to quantify the impact of domain-specific training.
+
+---
