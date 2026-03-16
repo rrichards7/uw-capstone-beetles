@@ -21,7 +21,7 @@ We will be using The Database of European Forest Insect and Disease Disturbances
 
 Download here: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/FOREST/DISTURBANCES/DEFID2/
 
-Then navigate to ____ notebook to process the raw records into a geopandas dataframe.
+Then navigate to [proc_defid2.ipynb](data_proc/proc_defid2.ipynb) notebook to process the raw records into a geopandas dataframe.
 
 ### Section 2.2: USFS 2023
 
@@ -131,6 +131,19 @@ ps2_sd:
   load_all_layers: true
   load_all_item_groups: true
   required: true
+```
+
+#### Section 3.1.3 Env Variables
+
+I would suggest setting these to facilitate cmds and API calls
+```bash
+export CUDA_VISIBLE_DEVICES=<GPU ID>
+export WANDB_PROJECT="PROJECT-ID"
+export WANDB_ENTITY="ACCOUNT-NAME"
+export WANDB_NAME="RUN-NAME"
+export OER_DATASET_PATH=<OERUN-PATH>
+export PROJECT_PATH=<PROJECT-PATH>
+export PL_API_KEY=<API KEY>
 ```
 
 ### Section 3.2: Building a Dataset
