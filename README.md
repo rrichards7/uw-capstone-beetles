@@ -232,7 +232,13 @@ Then the embeddings will be saved in the target directory specified in the model
 
 ## Section 4: Output Prediction Visualization
 
-TBD
+This section walks through the vizualization tools provided in the vizualization.ipynb notebook. This notebook is designed to be run end to end with minimal configuration by the user. The notebook walks through a series of visualizations for evaluating model predictions against ground‑truth labels using Sentinel‑2, DoveR, and SuperDove imagery. It begins with basic raster alignment and side‑by‑side visualization of the raw satellite image, labels, and predictions, then explores pixel‑intensity distributions and overlays contour comparisons. It also extracts polygon shapes from both masks to classify true positives, false positives, and false negatives, rendering them as colored outlines on the satellite image. Finally, it blends TP/FP/FN error maps directly onto multi‑sensor and time‑series imagery, including interactive widgets for switching sensors, spectral bands, and scrolling through monthly Sentinel‑2 scenes.
+
+### Section 4.1: Data Curation/Configuration:
+The first key step for visualization configuration is curating the ground truth raster, the predictions, and the sensor data to be used for the visuals. All three of these should be a result of the previous model training and inference, but for convenience there is sample data provided under the visualization folder within google drive. 
+
+### Section 4.2: Notebook Configuration
+To run this notebook on your own machine, you’ll need to update four separate sets of file paths. First, configure the standalone dataset paths that point to a single prediction raster, a single ground‑truth label, and a single Sentinel‑2 RGB image. Next, update the time‑series Sentinel‑2 directory, which contains month‑by‑month band‑group folders used by the interactive slider. Third, adjust the multi‑sensor directory that stores DoveR, Sentinel‑2, and SuperDove GeoTIFFs for the sensor‑switching visualizer. Make sure each directory mirrors the expected folder structure and contains the required band‑group files. The final set of filepaths is for a side by side visualization used on our poster which points to a particular task id of the superdove sensor data with ground truth and prediction rasters, this is not necessarily required to be unique, but is required to be defined, or change the variable names used to match pre defined predictions, ground truths, and sensor data.
 
 ## Section 5: Embedding Analysis
 
