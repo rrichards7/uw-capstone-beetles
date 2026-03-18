@@ -15,6 +15,16 @@ Then:
 cd olmoearth_projects && source .venv/bin/activate
 ```
 
+Clone and install the forked rslearn repo from here:
+```bash
+https://github.com/rrichards7/rslearn
+```
+
+Clone and install the forked olmoearth pretrain repo from here:
+```bash
+https://github.com/rrichards7/olmoearth_pretrain
+```
+
 ## Section 2: Data Processing
 We detail which datasets we use and how to correct process and format them for OlmoEarth ingest.
 
