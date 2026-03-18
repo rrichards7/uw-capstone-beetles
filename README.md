@@ -242,6 +242,16 @@ I would suggest creating a separate embedding-specific config, e.g. [config](exa
 
 Then the embeddings will be saved in the target directory specified in the model config.
 
+### Section 3.7: Boosting with Embeddings
+
+After extracting embeddings, these can be used as pixel-wise features for any classical ML model. We demonstrate this on the USFS dataset in a low-shot case, and train and gradient boosting model in this notebook:
+
+```bash
+https://github.com/rrichards7/uw-capstone-beetles/blob/main/embedding_boosting/boosting.ipynb
+```
+
+It shows how to read in embedding files as geotiffs, process and prepare them for boosting ingest, and evaluates performance by computing PRAUC and F1 scores.
+
 ## Section 4: Output Prediction Visualization
 
 This section walks through the vizualization tools provided in the vizualization.ipynb notebook. This notebook is designed to be run end to end with minimal configuration by the user and can be found in the Visualization folder here https://github.com/rrichards7/uw-capstone-beetles/blob/main/Visualizations/visualizations.ipynb. The notebook walks through a series of visualizations for evaluating model predictions against ground‑truth labels using Sentinel‑2, DoveR, and SuperDove imagery. It begins with basic raster alignment and side‑by‑side visualization of the raw satellite image, labels, and predictions, then explores pixel‑intensity distributions and overlays contour comparisons. It also extracts polygon shapes from both masks to classify true positives, false positives, and false negatives, rendering them as colored outlines on the satellite image. Finally, it blends TP/FP/FN error maps directly onto multi‑sensor and time‑series imagery, including interactive widgets for switching sensors, spectral bands, and scrolling through monthly Sentinel‑2 scenes.
