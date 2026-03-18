@@ -1,0 +1,58 @@
+{
+  "layers": {
+    "label": {
+      "band_sets": [
+        {
+          "bands": [
+            "label"
+          ],
+          "dtype": "uint8"
+        }
+      ],
+      "type": "raster"
+    },
+    "output": {
+      "band_sets": [
+        {
+          "bands": [
+            "output"
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "type": "raster"
+    },
+    "doveR_mar2019": {
+      "band_sets": [
+        {
+          "bands": ["B", "G", "R", "NIR"],
+          "dtype": "uint16"
+        }
+      ],
+      "data_source": {
+        "time_offset": "-611d",
+        "duration": "30d",
+        "cache_dir": "cache/doveR",
+        "item_type_id": "PSScene",
+        "asset_type_id": "ortho_analytic_4b_sr",
+        "ingest": true,
+        "name": "rslearn.data_sources.planet.Planet",
+        "bands":[
+            "b01",
+            "b02",
+            "b03",
+            "b04"
+          ],
+        "query_config": {
+          "time_mode": "WITHIN",
+          "max_matches": 1
+        },
+        "range_filters": {
+          "cloud_cover": {"lte": 1.0}
+        },
+        "sort_by": "cloud_cover"
+      },
+      "type": "raster"
+    }
+  }
+}

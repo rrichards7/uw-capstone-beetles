@@ -1,0 +1,216 @@
+model:
+  class_path: rslearn.train.lightning_module.RslearnLightningModule
+  init_args:
+    model:
+      class_path: rslearn.models.multitask.MultiTaskModel
+      init_args:
+        encoder:
+          - class_path: rslearn.models.olmoearth_pretrain.model.OlmoEarth
+            init_args:
+                # patch_size: token spatial patch size to use.
+                # model_id: the model ID to load. One of model_id or model_path or checkpoint_path must be
+                #     set.
+                # model_path: the path to load the model from. One of model_id or model_path or checkpoint_path must be
+                #     set. Same structure as the HF-hosted `model_id` models: bundle with a config.json and weights.pth.
+                # checkpoint_path: the checkpoint directory to load from, if model_id or model_path is not
+                #     set. It should contain a distributed checkpoint with a config.json file as well as model_and_optim
+                #     folder.
+                # selector: an optional sequence of attribute names or list indices to select
+                #     the sub-module that should be applied on the input images. Defaults to
+                #     ["encoder"] to select only the transformer encoder.
+                # forward_kwargs: additional arguments to pass to forward pass besides the
+                #     MaskedOlmoEarthSample.
+                # random_initialization: whether to skip loading the checkpoint so the
+                #     weights are randomly initialized. In this case, the checkpoint is only
+                #     used to define the model architecture.
+                # embedding_size: optional embedding size to report via
+                #     get_backbone_channels (if model_id is not set).
+                # autocast_dtype: which dtype to use for autocasting, or set None to disable.
+                model_id: "OLMOEARTH_V1_TINY" #"OLMOEARTH_V1_NANO" #"OLMOEARTH_V1_TINY" # "OLMOEARTH_V1_BASE"
+                # model_path: "/data/datasets/olmo/defid2/oerun_cluster_30d_trim/trainer_checkpoints/last.ckpt"
+                patch_size: 4
+                selector: ["encoder"]
+        decoders:
+          burnscar_segmentation:
+          - class_path: rslearn.models.unet.UNetDecoder
+            init_args:
+              in_channels:
+                - [4, 192] # 768 for BASE model, 192 for TINY, 128 for NANO
+              out_channels: 2
+              conv_layers_per_resolution: 2
+              kernel_size: 3
+              num_channels:
+                '1': 128
+                '2': 256
+                '4': 512
+          - class_path: rslearn.train.tasks.segmentation.SegmentationHead
+    lr: 0.0001
+    plateau: true
+    plateau_factor: 0.2
+    plateau_patience: 2
+    plateau_min_lr: 0
+    plateau_cooldown: 10
+data:
+  class_path: rslearn.train.data_module.RslearnDataModule
+  init_args:
+    path: ${DATASET_PATH}
+    inputs:
+      sentinel2_l2a:
+        data_type: "raster"
+        layers: [
+                #  "sentinel2_l2a_mar2019_redo",
+                 "sentinel2_l2a_mar_sept_2021_random",
+        #          "sentinel2_l2a_may2019",
+        #          "sentinel2_l2a_june2019",
+        #          "sentinel2_l2a_july2019",
+        #          "sentinel2_l2a_aug2019",
+        #          "sentinel2_l2a_sep2019",
+        #          "sentinel2_l2a_oct2019"
+                ]
+        bands: ["B02", "B03", "B04", "B08", "B05", "B06", "B07", "B8A", "B11", "B12", "B01", "B09"]
+        passthrough: true
+        dtype: FLOAT32
+        required: true
+        load_all_layers: true
+        load_all_item_groups: true
+      # ps2_sd:
+      #   data_type: "raster"
+      #   # layers: ["doveR_mar2019"]
+      #   layers: ["doveR_mar_sept_2020_random"]
+      #   # layers: ["doveR_mar_sept_2021_random"]
+      #   bands: ["b01", "b02", "b03", "b04"]
+      #   passthrough: true
+      #   dtype: FLOAT32
+      #   load_all_layers: true
+      #   load_all_item_groups: true
+      #   required: true
+      # psb_sd:
+      #   data_type: "raster"
+      #   layers: ["superdove_mar_sept_2021_random"]
+      #   bands: ["b01", "b02", "b03", "b04","b05", "b06", "b07", "b08"]
+      #   passthrough: true
+      #   dtype: FLOAT32
+      #   load_all_layers: true
+      #   load_all_item_groups: true
+      #   required: true
+      label:
+        data_type: "raster"
+        layers: ["label"]
+        bands: ["label"]
+        dtype: INT32
+        is_target: true
+    task:
+      class_path: rslearn.train.tasks.multi_task.MultiTask
+      init_args:
+        tasks:
+          burnscar_segmentation:
+            class_path: rslearn.train.tasks.segmentation.SegmentationTask
+            init_args:
+              num_classes: 2
+              zero_is_invalid: false
+              nodata_value: 255
+              enable_miou_metric: true
+              enable_f1_metric: true
+              enable_prauc_metric: true
+              enable_accuracy_metric: false
+              f1_metric_thresholds: [[0.01], [0.05], [0.1], [0.2], [0.3], [0.4], [0.5]]
+              metric_kwargs:
+                average: null
+        input_mapping:
+          burnscar_segmentation:
+            label: "targets"
+    batch_size: 64 # 64 before
+    num_workers: ${NUM_WORKERS}
+    default_config:
+      transforms:
+        - class_path: rslearn.models.olmoearth_pretrain.norm.OlmoEarthNormalize
+          init_args:
+            band_names:
+              sentinel2_l2a: ["B02", "B03", "B04", "B08", "B05", "B06", "B07", "B8A", "B11", "B12", "B01", "B09"]
+              # psb_sd: ["b01", "b02", "b03", "b04","b05", "b06", "b07", "b08"]
+              # ps2_sd: ["b01", "b02", "b03", "b04"]
+      patch_size: 64
+    train_config:
+      groups: ["spatial_split_10km"]
+      # By default (patch_size=null), data for the entire window bounds is read. This
+      # can be cropped using transforms, but if a random crop is desired, it is more
+      # efficient to crop it with this option, since this way the cropping will happen
+      # when reading GeoTIFFs. However, setting it here is less flexible, since it only
+      # supports random cropping.
+      patch_size: 64
+      # For validation, testing, and prediction, patch_size can be combined with
+      # load_all_crops to perform sliding window inference. For training, it should
+      # usually be left false so that each training epoch sees a different crop.
+      load_all_patches: false # randomly select new patches every epoch from full size image
+      # This should typically be enabled for predict_config, so that windows without
+      # layers containing targets are skipped. For training, validation, and testing,
+      # targets are needed so it should be false.
+      skip_targets: false
+      # split by tag in metadata.json
+      tags:
+        split: "train"
+    val_config:
+      groups: ["spatial_split_10km"]
+      patch_size: 64
+      load_all_patches: false # tmp
+      tags:
+        split: "val"
+    test_config:
+      groups: ["spatial_split_10km"]
+      patch_size: 64
+      load_all_patches: true
+      tags:
+        split: "test"
+    predict_config:
+      groups: ["spatial_split_10km"]
+      patch_size: 64
+      load_all_patches: true
+      overlap_ratio: 0.25  # 16 / 64
+      skip_targets: true
+      tags:
+        split: "test"
+trainer:
+  max_epochs: 100
+  check_val_every_n_epoch: 5
+  callbacks:
+    - class_path: lightning.pytorch.callbacks.LearningRateMonitor
+      init_args:
+        logging_interval: "epoch"
+    - class_path: lightning.pytorch.callbacks.ModelCheckpoint
+      init_args:
+        dirpath: ${TRAINER_DATA_PATH}
+        save_top_k: 1
+        save_last: true
+        monitor: val_loss
+        mode: min
+    - class_path: rslearn.train.callbacks.freeze_unfreeze.FreezeUnfreeze
+      init_args:
+        module_selector: ["model", "encoder", 0]
+        unfreeze_at_epoch: 10
+        unfreeze_lr_factor: 10
+    # - class_path: rslearn.train.prediction_writer.RslearnWriter
+    #   init_args:
+    #     path: ${DATASET_PATH}
+    #     output_layer: ${PREDICTION_OUTPUT_LAYER}
+    #     selector: ["burnscar_segmentation"]
+    #     merger:
+    #       class_path: rslearn.train.prediction_writer.RasterMerger
+    #       init_args:
+    #         padding: 8
+          # write out logits pixel-wise map
+    - class_path: rslearn.train.prediction_writer.RslearnWriter
+      init_args:
+        path: placeholder 
+        output_layer: output
+        selector: ["burnscar_segmentation"]
+        merger:
+          class_path: rslearn.train.prediction_writer.RasterMerger
+          init_args:
+            padding: 8
+  logger:
+    class_path: lightning.pytorch.loggers.WandbLogger
+    init_args:
+      project: ${WANDB_PROJECT}
+      name: ${WANDB_NAME}
+      entity: ${WANDB_ENTITY}
+# unused: ${EXTRA_FILES_PATH}
