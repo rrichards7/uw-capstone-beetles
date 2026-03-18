@@ -5,22 +5,28 @@ University of Washington MSDS Capstone Project 2026
 
 ## Section 1: Environment and Setup
 
-Follow setup instructions from Olmo segmentation docs here: 
+### Section 1.1 OlmoEarth Projects
+
+Clone and install [OlmoEarth Projects](https://github.com/allenai/olmoearth_projects) then follow setup instructions from Olmo segmentation docs here: 
 
 https://github.com/allenai/olmoearth_projects/blob/main/docs/tutorials/FinetuneOlmoEarthSegmentation.md
 
-Then:
+Then activate your environment via:
 
 ```bash
 cd olmoearth_projects && source .venv/bin/activate
 ```
 
-Clone and install the forked rslearn repo from here:
+### Section 1.2 Supporting Forked Repos
+
+Additionally, install the following forked and modified repos, which support Planetscope processing and other updates:
+
+Clone and install the forked **rslearn** repo from here:
 ```bash
 https://github.com/rrichards7/rslearn
 ```
 
-Clone and install the forked olmoearth pretrain repo from here:
+Clone and install the forked **olmoearth pretrain** repo from here:
 ```bash
 https://github.com/rrichards7/olmoearth_pretrain
 ```
@@ -44,6 +50,7 @@ Please refer to the previous team for this dataset: https://github.com/DSHydro/I
 ### Section 3.1: Configuration
 
 #### Section 3.1.1: Dataset Config
+Dataset configuration files are required for running OlmoEarth, exmaples of which for this project can be found here: [Dataset configs](https://github.com/rrichards7/uw-capstone-beetles/tree/main/example_configs/data_configs)
 
 Example SuperDove configuration update:
 ```json
@@ -114,6 +121,8 @@ Example Dove-R configuration update:
 ```
 
 #### Section 3.1.2: Model Config
+
+Model configuration files are required for running OlmoEarth, exmaples of which for this project can be found here: [Model configs](https://github.com/rrichards7/uw-capstone-beetles/tree/main/example_configs/model_configs)
 
 Example addition of **SuperDove** to model config:
 ```yaml
