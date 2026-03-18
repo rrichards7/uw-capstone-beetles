@@ -1,3 +1,5 @@
+<img width="300" height="75" alt="image" src="https://github.com/user-attachments/assets/5e958121-0399-496d-87c9-a6fd00956d1c" />
+
 # Detecting Bark Beetle Outbreaks through Geospatial Foundation Models
 University of Washington MSDS Capstone Project 2026
 
